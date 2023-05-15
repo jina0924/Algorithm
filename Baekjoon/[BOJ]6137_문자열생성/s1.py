@@ -34,9 +34,8 @@ while l <= r:
             T += string[r]
             r -= 1
     else:
-        while l <= r:
-            T += string[l]
-            l += 1
+        T += string[l]
+        l += 1
 for i in range(len(T)):
     print(T[i], end='')
     if i % 80 == 79:
