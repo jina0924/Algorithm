@@ -1,7 +1,7 @@
 # 백준 20056번 마법사 상어와 파이어볼
 
 import sys
-sys.stdin = open('input4.txt')
+sys.stdin = open('input5.txt')
 from collections import deque
 
 dr, dc = (-1, -1, 0, 1, 1, 1, 0, -1), (0, 1, 1, 1, 0, -1, -1, -1)
@@ -28,7 +28,9 @@ while K:
                     ball2.get((nr, nc))[2] = 0
         else:
             ball2[(nr, nc)] = [m, s, d, cnt]
+    print('new')
     for key, value in ball2.items():
+        print(value)
         r, c = key
         m, s, d, cnt = value
         if cnt > 1:
@@ -40,6 +42,7 @@ while K:
                     fireball.append([r, c, m//5, s//cnt, j, 1])
         elif cnt == 1 and m:
             fireball.append([r, c, m, s, d, cnt])
+    print(fireball)
     K -= 1
 ans = 0
 for ball in fireball:
