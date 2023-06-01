@@ -3,26 +3,18 @@
 import sys
 sys.stdin = open('input.txt')
 
-n, k = map(int, input().split())
-num = list(map(int, input()))
-left, right = 0, 1
-while k:
-    while right < n:
-        if num[right] < 0:
-            right += 1
-            continue
-        elif num[left] < num[right]:
-            num[left] = -1
-            k -= 1
-            if k <= 0:
-                break
-        left += 1
-        right += 1
-    left, right = 0, 1
-ans = 0
-point = 1
-for i in range(n - 1, -1, -1):
-    if num[i] >= 0:
-        ans += num[i] * point
-        point *= 10
-print(ans)
+N, K = map(int, input().split())
+num = list(input())
+
+'''
+1. 일단 ans에 숫자 넣어둠
+2. 만약 지울 수 있는 횟수가 남아있고(K > 0) ans에 빼낼 숫자가 있고(ans) 마지막 숫자가 현재 살펴보는 숫자보다 작다면(ans[-1] < num[i])
+3. ans에 남아있는 숫자가 현재 숫자보다 크거나 같을때까지 pop & K 1씩 줄이기
+'''
+ans = []
+for i in range(N):
+    while K and ans and ans[-1] < num[i]:
+        K -= 1
+        ans.pop()
+    ans.append(num[i])
+print(''.join(ans[:len(ans) - K]))
