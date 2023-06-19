@@ -1,69 +1,77 @@
-# 백준 3085번 사탕 게임
+# 백준 3085번 사탕 게임 - 2% x
 
 import sys
 sys.stdin = open('input.txt')
 input = sys.stdin.readline
+from copy import deepcopy
 
 
 def bfs(cr, cc):
-    isChanged = False
-    result, cnt = 0, 0
+    global ans
 
-    # 가로로 볼 때
-    for sr, sc in ((cr, cc), (cr - 1, cc), (cr + 1, cc)):
-        if 0 <= sr < N and 0 <= sc < N:
-            color = candies[sr][sc]
-        if sr + sc != 0:
-            isChanged = True
-        for nc in range(cc, N):
-            if candies[cr][nc] == color:
-                cnt += 1
-                visited[cr][nc] = 1
-            else:
-                if not isChanged:
-                    for dr, dc in ((-1, 0), (1, 0)):
-                        nnr, nnc = cr + dr, nc + dc
-                        if 0 <= nnr < N and 0 <= nnc < N and candies[nnr][nnc] == color:
-                            cnt += 1
-                            isChanged = True
-                            break
-                    else:
-                        nc += 1
-                        if nc < N and candies[cr][nc]:
-                            cnt += 1
-                        break
-                else:
-                    break
-    result = max(result, cnt)
     isChanged = False
-    cnt = 0
-    # 세로로 볼 떄
-    for sr, sc in ((cr, cc), (cr, cc -1), (cr, cc + 1)):
-        if 0 <= sr < N and 0 <= sc < N:
-            color = candies[sr][sc]
-        if sr + sc != 0:
-            isChanged = True
-        for nr in range(cr, N):
-            if candies[nr][cc] == color:
+    data = deepcopy(candies)
+
+    # 가로로 보기
+    for sd in (0, -1, 1):
+        sr = cr + sd
+        cnt = 0
+        if 0 <= sr < N:
+            color = data[sr][cc]
+            if sd != 0:
+                isChanged = True
+                data[cr][cc], data[sr][cc] = data[sr][cc], data[cr][cc]
+        for nc in range(cc, N):
+            if data[cr][nc] == color:
                 cnt += 1
-                visited[nr][cc] = 1
             else:
-                if not isChanged:
-                    for dr, dc in ((0, -1), (0, 1)):
-                        nnr, nnc = nr + dr, cc + dc
-                        if 0 <= nnr < N and 0 <= nnc < N and candies[nnr][nnc] == color:
-                            cnt += 1
+                if isChanged:
+                    break
+                else:
+                    for dr, dc in (1, 0), (0, 1):
+                        nr, nnc = cr + dr, nc + dc
+                        if 0 <= nr < N and 0 <= nnc < N and data[nr][nnc] == color:
                             isChanged = True
+                            data[nr][nnc], data[cr][nc] = data[cr][nc], data[nr][nnc]
+                            cnt += 1
                             break
                     else:
-                        nr += 1
-                        if nr < N and candies[nr][cc]:
-                            cnt += 1
                         break
-                else:
+        if isChanged:
+            ans = max(ans, cnt)
+
+    # 세로로 보기
+    isChanged = False
+    data = deepcopy(candies)
+
+    # 가로로 보기
+    for sd in (0, -1, 1):
+        sc = cc + sd
+        cnt = 0
+        if 0 <= sc < N:
+            color = data[cr][sc]
+            if sd != 0:
+                isChanged = True
+                data[cr][cc], data[cr][sc] = data[cr][sc], data[cr][cc]
+        for nr in range(cr, N):
+            if data[nr][cc] == color:
+                cnt += 1
+            else:
+                if isChanged:
                     break
-        result = max(result, cnt)
-    return result
+                else:
+                    for dr, dc in (0, 1), (1, 0):
+                        nnr, nc = nr + dr, cc + dc
+                        if 0 <= nnr < N and 0 <= nc < N and data[nnr][nc] == color:
+                            isChanged = True
+                            data[nnr][nc], data[nr][cc] = data[nr][cc], data[nnr][nc]
+                            cnt += 1
+                            break
+                    else:
+                        break
+        if isChanged:
+            ans = max(ans, cnt)
+
 
 
 N = int(input())
@@ -73,5 +81,5 @@ ans = 0
 for r in range(N):
     for c in range(N):
         if not visited[r][c]:
-            ans = max(bfs(r, c), ans)
+            bfs(r, c)
 print(ans)
