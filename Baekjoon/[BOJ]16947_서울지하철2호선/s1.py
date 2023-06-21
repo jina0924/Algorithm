@@ -42,8 +42,6 @@ def get_dist(s, e):
 
 
 def dfs(v, pv):
-    global isCycle
-
     p[v] = pv
     for nv in graph[v]:
         if not p[nv]:               # 아직 부모노드 안봤다면
