@@ -3,30 +3,27 @@
 import sys
 sys.stdin = open('input.txt')
 from itertools import combinations as C
-from collections import defaultdict
 
 data = input()
-brackets = defaultdict(list)
+brackets = []
 
-tmp = 1
-for idx in range(len(data)):
-    if data[idx] == '(':
-        brackets[tmp].append(idx)
-        tmp += 1
-    elif data[idx] == ')':
-        tmp -= 1
-        brackets[tmp].append(idx)
+stack = []
+for i in range(len(data)):
+    if data[i] == '(':
+        stack.append(i)
+    elif data[i] == ')':
+        s = stack.pop()
+        brackets.append((s, i))
 
-ans = []
+ans = set()
 cnt = len(brackets)
 for n in range(1, cnt + 1):
-    comb = C(brackets.keys(), n)
+    comb = C(brackets, n)
     for c in comb:
         result = list(data)
-        for j in c:
-            s, e = brackets[j]
+        for s, e in c:
             result[s], result[e] = '', ''
-        ans.append(''.join(result))
+        ans.add(''.join(result))
 
 for a in sorted(ans):
     print(a)
